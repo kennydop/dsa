@@ -7,17 +7,18 @@ class Node:
         next_node: Reference to next node in linked list
     """
 
-    def __init__(self, data, next_node=None):
+    def __init__(self, data, next_node=None, previous_node=None):
         self.data = data
         self.next_node = next_node
+        self.previous_node = previous_node
 
     def __repr__(self):
         return "<Node data: %s>" % self.data
 
 
-class SinglyLinkedList:
+class DoublyLinkedList:
     """
-    Linear data structure that stores values in nodes. The list maintains a reference to the first node, also called head. Each node points to the next node in the list
+    Linear data structure that stores values in nodes. The list maintains a reference to the first node, also called head. Each node points to the next node and the previous node in the list
 
     Attributes:
         head: The head node of the list
@@ -40,7 +41,6 @@ class SinglyLinkedList:
         Determines if the linked list is empty
         Takes O(1) time
         """
-
         return self.head is None
 
     def add(self, data):
@@ -50,6 +50,7 @@ class SinglyLinkedList:
         """
         next_node = self.head
         node = Node(data, next_node)
+        next_node.previous_node = node
         self.head = node
         self.length += 1
 
@@ -62,17 +63,15 @@ class SinglyLinkedList:
         """
         if index >= self.length:
             raise IndexError('index out of range')
+
         if (index == 0):
             return self.add(data)
-        current_node = self.head
-        current_index = 0
 
-        while current_index < index - 1:
-            current_node = current_node.next_node
-            current_index += 1
-
-        next_node = current_node.next_node
-        current_node.next_node = Node(data, next_node)
+        current_node = self.at(index)
+        previous_node = current_node.previous_node
+        node = Node(data, current_node, previous_node)
+        previous_node.next_node = node
+        current_node.previous_node = node
         self.length += 1
 
     def pop(self):
@@ -81,6 +80,7 @@ class SinglyLinkedList:
         Takes O(1) time
         """
         head = self.head.next_node
+        head.previous_node = None
         self.head = head
         self.length -= 1
 
@@ -93,8 +93,11 @@ class SinglyLinkedList:
         if(self.head.data == data):
             self.pop()
         while current_node:
-            if(current_node.next_node.data == data):
-                current_node.next_node = current_node.next_node.next_node
+            if(current_node.data == data):
+                previous_node = current_node.previous_node
+                next_node = current_node.next_node
+                previous_node.next_node = next_node
+                next_node.previous_node = previous_node
                 self.length -= 1
                 break
             current_node = current_node.next_node
@@ -106,15 +109,15 @@ class SinglyLinkedList:
         """
         if index >= self.length:
             raise IndexError('index out of range')
+
         if(index == 0):
             return self.pop()
-        current_index = 0
-        current_node = self.head
-        while current_index < index - 1:
-            current_node = current_node.next_node
-            current_index += 1
 
-        current_node.next_node = current_node.next_node.next_node
+        current_node = self.at(index)
+        previous_node = current_node.previous_node
+        next_node = current_node.next_node
+        previous_node.next_node = next_node
+        next_node.previous_node = previous_node
         self.length -= 1
 
     def at(self, index):
@@ -165,4 +168,4 @@ class SinglyLinkedList:
             else:
                 nodes.append("[%s]" % current.data)
             current = current.next_node
-        return ' -> '.join(nodes)
+        return ' <-> '.join(nodes)
