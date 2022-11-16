@@ -85,6 +85,23 @@
 // );
 // console.log(caesarCipher("u-v-w-x-y-z", -55));
 
-var grid = ["eaewew", "asdfgh"];
-var ordered = grid[0].sort();
-console.log(ordered);
+// var grid = ["eaewew", "asdfgh"];
+// var ordered = grid[0].sort();
+// console.log(ordered);
+
+const addWithDiffSigns = (num) => {
+  var numbers = [];
+  var sum = 0;
+  while (num > 0) {
+    numbers.push(num % 10);
+    num = Math.floor(num / 10);
+  }
+  var sign = 1;
+  for (let i = numbers.length - 1; i >= 0; i--) {
+    const e = numbers[i];
+    sign % 2 === 0 ? (sum -= e) : (sum += e);
+    sign++;
+  }
+  return sum;
+};
+console.log(addWithDiffSigns(54132));
