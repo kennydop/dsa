@@ -45,12 +45,11 @@ function verticalOrder(root) {
     map[cur[1]] =
       map[cur[1]] === undefined ? [cur[0].data] : [...map[cur[1]], cur[0].data];
     if (cur[0].left) queue.enqueue([cur[0].left, cur[1] - 1]);
-
     if (cur[0].right) queue.enqueue([cur[0].right, cur[1] + 1]);
-
     l = Math.min(l, cur[1]);
     h = Math.max(h, cur[1]);
   }
+
   var res = [];
   for (let i = l; i <= h; i++) {
     var q = map[i];
